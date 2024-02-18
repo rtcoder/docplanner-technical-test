@@ -15,12 +15,14 @@ use OpenApi\Annotations as OA;
  *     title="ToDo API",
  *     version="1.0.0",
  *     description="ToDo API",
+ *
  *     @OA\Contact(
  *       email="dawidjez@gmail.com",
  *       name="Dawid Jeż"
  *     ),
  *   ),
- *    @OA\Components(
+ *
+ *     @OA\Components(
  *      @OA\SecurityScheme(
  *        securityScheme="bearerAuth",
  *        type="http",
@@ -28,38 +30,149 @@ use OpenApi\Annotations as OA;
  *        bearerFormat="JWT",
  *        description="Podaj **_'Bearer [token]'_** jako wartość, aby się uwierzytelnić."
  *      ),
+ *
  *      @OA\Schema(
  *        schema="User",
  *        type="object",
- *        required={"name", "email"},
+ *
  *        @OA\Property(
  *          property="id",
  *          type="integer",
  *          description="User ID"
  *        ),
+ *
  *        @OA\Property(
  *          property="name",
  *          type="string",
  *          description="The name of the user"
  *        ),
+ *
  *        @OA\Property(
  *          property="email",
  *          type="string",
  *          description="The email of the user"
  *        ),
+ *
  *        @OA\Property(
  *          property="created_at",
  *          type="string",
  *          format="date-time",
  *          description="Timestamp of when the user was created"
  *        ),
+ *
  *        @OA\Property(
  *          property="updated_at",
  *          type="string",
  *          format="date-time",
  *          description="Timestamp of when the user was last updated"
  *        )
- *      )
+ *      ),
+ *
+ *      @OA\Schema(
+ *        schema="UserInTask",
+ *        type="object",
+ *
+ *        @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          description="User ID"
+ *        ),
+ *
+ *        @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          description="The name of the user"
+ *        ),
+ *
+ *        @OA\Property(
+ *          property="email",
+ *          type="string",
+ *          description="The email of the user"
+ *        ),
+ *      ),
+ *
+ *      @OA\Schema(
+ *        schema="Task",
+ *        type="object",
+ *
+ *        @OA\Property(
+ *           property="id",
+ *           type="integer",
+ *           description="Task ID"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="title",
+ *           type="string",
+ *           description="Task title"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="content",
+ *           type="string",
+ *           description="Task content"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="user",
+ *           type="object",
+ *           ref="#/components/schemas/UserInTask",
+ *           description="The user who is assigned to the task"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="user_id",
+ *           type="integer",
+ *           description="Timestamp of when the user was last updated"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="status",
+ *           type="integer",
+ *           description="The status of the task. Use integers to represent different statuses (e.g., 1 for Pending, 2 for In Progress, 3 for Completed)"
+ *        ),
+ *
+ *        @OA\Property(
+ *           property="status_name",
+ *           type="integer",
+ *           description="Name of the task status"
+ *        )
+ *     ),
+ *
+ *     @OA\Schema(
+ *       schema="TaskRequest",
+ *       type="object",
+ *       required={"title", "content", "user_id", "status"},
+ *
+ *       @OA\Property(
+ *         property="title",
+ *         type="string",
+ *         maxLength=255,
+ *         description="The title of the task",
+ *         example="Complete the Laravel project"
+ *       ),
+ *
+ *       @OA\Property(
+ *         property="content",
+ *         type="string",
+ *         description="Detailed content of the task",
+ *         example="Finish writing the unit tests for all modules"
+ *       ),
+ *
+ *       @OA\Property(
+ *         property="user_id",
+ *         type="integer",
+ *         description="The ID of the user who is assigned to the task",
+ *         example=1
+ *       ),
+ *
+ *       @OA\Property(
+ *         property="status",
+ *         type="integer",
+ *         description="The status of the task. Use integers to represent different statuses (e.g., 1 for Pending, 2 for In Progress, 3 for Completed)",
+ *         example=1
+ *       ),
+ *     ),
  *    ),
  * )
  */

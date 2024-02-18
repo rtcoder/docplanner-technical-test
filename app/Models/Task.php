@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $title
  * @property string $content
+ * @property-read  string $status_name
+ * @property-read  User $user
  * @property TaskStatus $status
  * @property int $user_id
  */
@@ -32,11 +34,30 @@ class Task extends Model
         'status' => TaskStatus::class,
     ];
 
-    public function user():BelongsTo
+    protected $with = [
+        'user',
+    ];
+
+    protected $appends = [
+        'status_name',
+    ];
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)
             ->select([
-                'name'
+                'id',
+                'name',
+                'email',
             ]);
+    }
+
+    public function getStatusNameAttribute(): string
+    {
+        return match ($this->status) {
+            TaskStatus::Pending => 'Pending',
+            TaskStatus::InProgress => 'In Progress',
+            TaskStatus::Completed => 'Completed',
+        };
     }
 }
