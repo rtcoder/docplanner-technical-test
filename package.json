@@ -6,6 +6,7 @@
         "build": "vite build",
         "generate-open-api": "php artisan l5-swagger:generate",
         "serve": "php artisan serve",
+        "test": "php artisan test",
         "init-app":"sh init-app.sh"
     },
     "devDependencies": {
