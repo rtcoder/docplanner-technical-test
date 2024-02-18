@@ -230,15 +230,247 @@
                     }
                 }
             }
+        },
+        "/api/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get list of all tasks",
+                "description": "Returns a list of all tasks available in the database.",
+                "operationId": "getAllTasks",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Task"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create a new task",
+                "description": "Creates a new task and returns the id of the newly created task.",
+                "operationId": "storeTask",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content",
+                                    "user_id",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "New Task Title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Task content details"
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "description": "1 for Pending, 2 for In Progress, 3 for Completed",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation failed for one or more fields."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tasks/{task}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get task details",
+                "description": "Returns task data",
+                "operationId": "getTaskById",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete a task",
+                "description": "Deletes a task and returns no content.",
+                "operationId": "deleteTask",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tasks/{taskId}": {
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update an existing task",
+                "description": "Updates and returns the task data",
+                "operationId": "updateTask",
+                "parameters": [
+                    {
+                        "name": "taskId",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaskRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
             "User": {
-                "required": [
-                    "name",
-                    "email"
-                ],
                 "properties": {
                     "id": {
                         "description": "User ID",
@@ -261,6 +493,87 @@
                         "description": "Timestamp of when the user was last updated",
                         "type": "string",
                         "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "UserInTask": {
+                "properties": {
+                    "id": {
+                        "description": "User ID",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "The name of the user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "The email of the user",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Task": {
+                "properties": {
+                    "id": {
+                        "description": "Task ID",
+                        "type": "integer"
+                    },
+                    "title": {
+                        "description": "Task title",
+                        "type": "string"
+                    },
+                    "content": {
+                        "description": "Task content",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserInTask"
+                    },
+                    "user_id": {
+                        "description": "Timestamp of when the user was last updated",
+                        "type": "integer"
+                    },
+                    "status": {
+                        "description": "The status of the task. Use integers to represent different statuses (e.g., 1 for Pending, 2 for In Progress, 3 for Completed)",
+                        "type": "integer"
+                    },
+                    "status_name": {
+                        "description": "Name of the task status",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "TaskRequest": {
+                "required": [
+                    "title",
+                    "content",
+                    "user_id",
+                    "status"
+                ],
+                "properties": {
+                    "title": {
+                        "description": "The title of the task",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Complete the Laravel project"
+                    },
+                    "content": {
+                        "description": "Detailed content of the task",
+                        "type": "string",
+                        "example": "Finish writing the unit tests for all modules"
+                    },
+                    "user_id": {
+                        "description": "The ID of the user who is assigned to the task",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "The status of the task. Use integers to represent different statuses (e.g., 1 for Pending, 2 for In Progress, 3 for Completed)",
+                        "type": "integer",
+                        "example": 1
                     }
                 },
                 "type": "object"
