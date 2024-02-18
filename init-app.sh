@@ -6,4 +6,3 @@ php artisan key:generate
 #install dependencies
 composer install
 
-#create secret
