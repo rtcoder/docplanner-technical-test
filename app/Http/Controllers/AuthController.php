@@ -149,7 +149,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::query()->where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
@@ -296,24 +296,20 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
-        // Walidacja danych wejściowych
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Tworzenie użytkownika
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // Generowanie tokena (dla Sanctum)
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Zwrócenie odpowiedzi
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user,
