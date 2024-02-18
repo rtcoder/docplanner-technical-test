@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\User;
 
 class AuthTest extends TestCase
 {
@@ -28,11 +28,12 @@ class AuthTest extends TestCase
                     'email',
                     'updated_at',
                     'created_at',
-                    'id'
+                    'id',
                 ],
-                'token'
+                'token',
             ]);
     }
+
     public function test_user_can_login()
     {
         $user = User::factory()->create([
@@ -47,9 +48,10 @@ class AuthTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'token'
+                'token',
             ]);
     }
+
     public function test_user_can_logout()
     {
         $user = User::factory()->create();
@@ -57,9 +59,9 @@ class AuthTest extends TestCase
         $token = $user->createToken('test-token')->plainTextToken;
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
+            'Authorization' => 'Bearer ' . $token,
         ])->postJson('/api/logout');
-dump($token, $response->json());
+
         $response->assertStatus(200)
             ->assertJson(['message' => 'Logged out successfully']);
     }
